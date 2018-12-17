@@ -59,7 +59,14 @@ MyPermissions.get(MainActivity.this).request(Manifest.permission.CAMERA, new Per
 //请求Manifest里面配置必须动态申请的所有权限
 MyPermissions.get(MainActivity.this).requestAll(PermissionsCallback);
 ```  
-
+      
+| 最新版本号 | [ ![Download](https://api.bintray.com/packages/zhongrui/mylibrary/MyPermissions/images/download.svg) ](https://bintray.com/zhongrui/mylibrary/MyPermissions/_latestVersion) |
+|--------|----|
+  
+   
+```gradle 
+implementation 'com.github:MyPermissions:版本正在审核中'
+```
 <br/>
 <br/>
 <br/>  
