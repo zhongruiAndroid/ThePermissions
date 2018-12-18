@@ -42,7 +42,8 @@ PermissionsManager.get().requestAll(this,PermissionsCallback);
 
 ```  
 
-### 或者(or)(不需要在activity配置onRequestPermissionsResult)
+### 或者(or)
+### 不需要在activity配置onRequestPermissionsResult
 ```java 
 MyPermissions.get(MainActivity.this).request(Manifest.permission.CAMERA, new PermissionsCallback() {
     @Override
