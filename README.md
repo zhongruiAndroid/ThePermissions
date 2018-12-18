@@ -65,7 +65,7 @@ MyPermissions.get(MainActivity.this).requestAll(PermissionsCallback);
   
    
 ```gradle 
-implementation 'com.github:MyPermissions:版本正在审核中'
+implementation 'com.github:MyPermissions:版本号看上面'
 ```
 <br/>
 <br/>
