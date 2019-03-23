@@ -1,8 +1,6 @@
 package com.test.permissions;
 
 import android.Manifest;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,8 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.github.permissions.MyPermissions;
-import com.github.permissions.PermissionsCallback;
+import com.github.permissions.PermissionCallback;
 
 public class BlankFragment extends Fragment {
     Button btRequest;
@@ -37,7 +34,7 @@ public class BlankFragment extends Fragment {
         btRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyPermissions.get(BlankFragment.this).request(new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_CONTACTS}, new PermissionsCallback() {
+                MyPermissions.get(BlankFragment.this).request(new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_CONTACTS}, new PermissionCallback() {
                     @Override
                     public void granted() {
                         Log.i("==","f===granted");
@@ -57,7 +54,7 @@ public class BlankFragment extends Fragment {
                         Log.i("==","f===eachDenied"+permissions);
                     }
                 });
-                /*MyPermissions.get(BlankFragment.this).requestAll(new PermissionsCallback() {
+                /*MyPermissions.get(BlankFragment.this).requestAll(new PermissionCallback() {
                     @Override
                     public void granted() {
                         Log.i("==","f===granted");

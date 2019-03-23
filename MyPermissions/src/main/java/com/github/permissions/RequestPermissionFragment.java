@@ -13,21 +13,22 @@ import java.util.Random;
  * @createBy Administrator
  * @time 2018-12-17 13:45
  */
-public class RequestPermissionsFragment extends Fragment {
+public class RequestPermissionFragment extends Fragment {
 
-    private SparseArray<PermissionsCallback> callbackSparseArray=new SparseArray<>();
+    private SparseArray<PermissionCallback> callbackSparseArray=new SparseArray<>();
+    private RequestPermissionManager requestPermissionManager;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
     }
 
-    public static RequestPermissionsFragment newInstance() {
-        RequestPermissionsFragment fragment = new RequestPermissionsFragment();
+    public static RequestPermissionFragment newInstance() {
+        RequestPermissionFragment fragment = new RequestPermissionFragment();
         return fragment;
     }
 
-    public int setCallbackForCode(PermissionsCallback callback){
+    public int setCallbackForCode(PermissionCallback callback){
         if(callbackSparseArray==null){
             callbackSparseArray=new SparseArray<>();
         }
@@ -42,15 +43,15 @@ public class RequestPermissionsFragment extends Fragment {
         if (grantResults==null||grantResults.length <=0) {
             return;
         }
-        PermissionsCallback permissionsCallback = callbackSparseArray.get(requestCode);
-        if(permissionsCallback!=null){
+        PermissionCallback permissionCallback = callbackSparseArray.get(requestCode);
+        if(permissionCallback !=null){
             boolean allGranted=true;
             String firstDenied=null;
             for (int i = 0; i < grantResults.length; i++) {
                 if(grantResults[i] == PackageManager.PERMISSION_GRANTED){
-                    permissionsCallback.eachGranted(permissions[i]);
+                    permissionCallback.eachGranted(permissions[i]);
                 }else if(grantResults[i] == PackageManager.PERMISSION_DENIED){
-                    permissionsCallback.eachDenied(permissions[i]);
+                    permissionCallback.eachDenied(permissions[i]);
                     allGranted=false;
                     if(firstDenied==null){
                         firstDenied=permissions[i];
@@ -58,9 +59,9 @@ public class RequestPermissionsFragment extends Fragment {
                 }
             }
             if (allGranted) {
-                permissionsCallback.granted();
+                permissionCallback.granted();
             }else{
-                permissionsCallback.denied(firstDenied);
+                permissionCallback.denied(firstDenied);
             }
 
             callbackSparseArray.remove(requestCode);
@@ -82,4 +83,12 @@ public class RequestPermissionsFragment extends Fragment {
 
         return code;
     }
+
+    public RequestPermissionManager getRequestPermissionManager() {
+        if (requestPermissionManager == null) {
+            requestPermissionManager=new RequestPermissionManager(this);
+        }
+        return requestPermissionManager;
+    }
+
 }
