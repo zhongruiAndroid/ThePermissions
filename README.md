@@ -3,6 +3,7 @@
 ```java 
 String  permission=Manifest.permission.CAMERA;
 String[]permission={Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE};
+
 MyPermission.get(this).request(permission, new PermissionCallback() {
     @Override
     public void granted() {
