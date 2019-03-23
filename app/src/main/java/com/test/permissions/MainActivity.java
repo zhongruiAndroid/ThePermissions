@@ -1,13 +1,14 @@
 package com.test.permissions;
 
 import android.Manifest;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.github.permissions.MyPermission;
 import com.github.permissions.PermissionCallback;
 
 
@@ -21,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         btGet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyPermissions.get(MainActivity.this).request(new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_CONTACTS}, new PermissionCallback() {
+                MyPermission.get(MainActivity.this).request(new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_CONTACTS}, new PermissionCallback() {
                     @Override
                     public void granted() {
                         Log.i("==","===granted");

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.github.permissions.MyPermission;
 import com.github.permissions.PermissionCallback;
 
 public class BlankFragment extends Fragment {
@@ -34,7 +35,7 @@ public class BlankFragment extends Fragment {
         btRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyPermissions.get(BlankFragment.this).request(new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_CONTACTS}, new PermissionCallback() {
+                MyPermission.get(BlankFragment.this).request(new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_CONTACTS}, new PermissionCallback() {
                     @Override
                     public void granted() {
                         Log.i("==","f===granted");
