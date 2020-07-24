@@ -35,7 +35,7 @@ public class BlankFragment extends Fragment {
         btRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyPermission.get(BlankFragment.this).request(new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_CONTACTS}, new PermissionCallback() {
+                MyPermission.get(BlankFragment.this).request(new String[]{Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA,Manifest.permission.WRITE_CONTACTS}, new PermissionCallback() {
                     @Override
                     public void granted() {
                         Log.i("==","f===granted");

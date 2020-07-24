@@ -22,24 +22,24 @@ public class MainActivity extends AppCompatActivity {
         btGet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyPermission.get(MainActivity.this).request(new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_CONTACTS}, new PermissionCallback() {
+                MyPermission.get(MainActivity.this).request(new String[]{Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA,Manifest.permission.WRITE_CONTACTS}, new PermissionCallback() {
                     @Override
                     public void granted() {
-                        Log.i("==","===granted");
+                        Log.i("==========","=============granted");
                     }
                     @Override
                     public void denied(String firstDenied) {
-                        Log.i("==","==denied="+firstDenied);
+                        Log.i("==========","============denied="+firstDenied);
                     }
                     @Override
                     public void eachGranted(String permissions) {
                         super.eachGranted(permissions);
-                        Log.i("==","===eachGranted"+permissions);
+                        Log.i("============","=============eachGranted"+permissions);
                     }
                     @Override
                     public void eachDenied(String permissions) {
                         super.eachDenied(permissions);
-                        Log.i("==","===eachDenied"+permissions);
+                        Log.i("============","=============eachDenied"+permissions);
                     }
                 });
 
