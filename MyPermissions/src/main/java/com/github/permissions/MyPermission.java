@@ -1,5 +1,9 @@
 package com.github.permissions;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -35,5 +39,28 @@ public class MyPermission {
             return requestPermissionFragment.getRequestPermissionManager();
         }
 
+    }
+    /**
+     * 跳转到系统设置页面
+     */
+    public static void goIntentSetting(Activity activity) {
+        goIntentSetting(activity,-100);
+    }
+    public static void goIntentSetting(Activity activity, int requestCode) {
+        if(activity==null){
+            return;
+        }
+        try {
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
+            intent.setData(uri);
+            if(requestCode==-100){
+                activity.startActivity(intent);
+            }else{
+                activity.startActivityForResult(intent,requestCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

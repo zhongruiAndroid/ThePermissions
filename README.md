@@ -1,51 +1,10 @@
 # ThePermissions
+
 ```java 
-/*********只需要在activity配置onRequestPermissionsResult*********/
+String  permission=Manifest.permission.CAMERA;
+String[]permission={Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE};
 
-@Override
-public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    PermissionsManager.get().setPermissionsResult(requestCode,permissions,grantResults);
-}
-
-PermissionsManager.get().request(MainActivity.this,new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_CONTACTS}, new PermissionsCallback() {
-    @Override
-    public void granted() {
-        //权限全部允许
-    }
-    @Override
-    public void denied(String firstDenied) {
-        //拒绝单个权限或者全部权限
-    }
-    @Override
-    public void eachGranted(String permissions) {
-        super.eachGranted(permissions);
-        //每个被允许的权限
-    }
-    @Override
-    public void eachDenied(String permissions) {
-        super.eachDenied(permissions);
-        //每个被拒绝的权限
-    }
-});
-
-
-//单个权限String
-PermissionsManager.get().request(this,String,PermissionsCallback);
-
-//多个权限String[]
-PermissionsManager.get().request(this,String[],PermissionsCallback);
-
-//请求Manifest里面配置必须动态申请的所有权限
-PermissionsManager.get().requestAll(this,PermissionsCallback);
-
-
-```  
-
-### 或者(or)
-### 不需要在activity配置onRequestPermissionsResult
-```java 
-MyPermissions.get(MainActivity.this).request(Manifest.permission.CAMERA, new PermissionsCallback() {
+MyPermission.get(this).request(permission, new PermissionCallback() {
     @Override
     public void granted() {
         //权限全部允许
@@ -55,11 +14,17 @@ MyPermissions.get(MainActivity.this).request(Manifest.permission.CAMERA, new Per
         //拒绝单个权限或者全部权限
     }
    //此处忽略两个重写方法(eachGranted和eachDenied)
+   //eachGranted:每个被允许的权限
+   //eachDenied:每个被拒绝的权限
 });
 
-//请求Manifest里面配置必须动态申请的所有权限
-MyPermissions.get(MainActivity.this).requestAll(PermissionsCallback);
+//Manifest里面所有需要动态申请的权限
+MyPermission.get(this).requestAll(PermissionCallback);
 ```  
+
+### 如果本库对您有帮助,还希望支付宝扫一扫下面二维码,你我同时免费获取奖励金(非常感谢 Y(^-^)Y)
+![github](https://github.com/zhongruiAndroid/SomeImage/blob/master/image/small_ali.jpg?raw=true "github")  
+
       
 | 最新版本号 | [ ![Download](https://api.bintray.com/packages/zhongrui/mylibrary/MyPermissions/images/download.svg) ](https://bintray.com/zhongrui/mylibrary/MyPermissions/_latestVersion) |
 |--------|----|
