@@ -13,4 +13,7 @@ public abstract class PermissionCallback {
     public void eachDenied(String permission){
 
     };
+    public void eachGranted(String permission,boolean preIsGranted){
+
+    };
 }

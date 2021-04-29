@@ -55,9 +55,12 @@ public class RequestPermissionFragment extends Fragment implements PermissionReq
         if (permissionCallback != null) {
             boolean allGranted = true;
             String firstDenied = null;
+            String permission = "";
             for (int i = 0; i < grantResults.length; i++) {
                 if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                    permissionCallback.eachGranted(permissions[i]);
+                    permission = permissions[i];
+                    permissionCallback.eachGranted(permission);
+                    permissionCallback.eachGranted(permission, false);
                 } else if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
                     permissionCallback.eachDenied(permissions[i]);
                     allGranted = false;
@@ -114,6 +117,7 @@ public class RequestPermissionFragment extends Fragment implements PermissionReq
             int checkSelfPermission = ActivityCompat.checkSelfPermission(activity, permissionItem);
             if (checkSelfPermission == PackageManager.PERMISSION_GRANTED) {
                 callback.eachGranted(permissionItem);
+                callback.eachGranted(permissionItem, true);
             } else {
                 permissionList.add(permissionItem);
             }
