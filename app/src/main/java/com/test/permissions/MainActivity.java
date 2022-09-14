@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 MyPermission.get(MainActivity.this).request(new String[]{Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA,Manifest.permission.WRITE_CONTACTS}, new PermissionCallback() {
                     @Override
-                    public void granted() {
+                    public void agree() {
                         Log.i("==========","=============granted");
                     }
                     @Override
@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.i("==========","============denied="+firstDenied);
                     }
                     @Override
-                    public void eachGranted(String permissions) {
-                        super.eachGranted(permissions);
+                    public void eachAgree(String permissions,boolean is) {
+                        super.eachAgree(permissions,is);
                         Log.i("============","=============eachGranted"+permissions);
                     }
                     @Override
