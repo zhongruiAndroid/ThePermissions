@@ -6,8 +6,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-
+import android.text.TextUtils;
 import android.util.SparseArray;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Random;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+
 
 /**
  * @createBy Administrator
@@ -59,8 +61,7 @@ public class RequestPermissionFragment extends Fragment implements PermissionReq
             for (int i = 0; i < grantResults.length; i++) {
                 if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                     permission = permissions[i];
-                    permissionCallback.eachGranted(permission);
-                    permissionCallback.eachGranted(permission, false);
+                    permissionCallback.eachAgree(permission, false);
                 } else if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
                     permissionCallback.eachDenied(permissions[i]);
                     allGranted = false;
@@ -70,7 +71,7 @@ public class RequestPermissionFragment extends Fragment implements PermissionReq
                 }
             }
             if (allGranted) {
-                permissionCallback.granted();
+                permissionCallback.agree();
             } else {
                 permissionCallback.denied(firstDenied);
             }
@@ -104,26 +105,30 @@ public class RequestPermissionFragment extends Fragment implements PermissionReq
     }
 
     public void request(String[] permission, PermissionCallback callback) {
-        if (permission == null || permission.length == 0 || callback == null) {
+        if (permission == null || permission.length == 0 ) {
             return;
         }
-
-
         Activity activity = getActivity();
 
         List<String> permissionList = new ArrayList<>();
 
         for (String permissionItem : permission) {
+            if(TextUtils.isEmpty(permissionItem)||TextUtils.isEmpty(permissionItem.replace(" ",""))){
+                continue;
+            }
             int checkSelfPermission = ActivityCompat.checkSelfPermission(activity, permissionItem);
             if (checkSelfPermission == PackageManager.PERMISSION_GRANTED) {
-                callback.eachGranted(permissionItem);
-                callback.eachGranted(permissionItem, true);
+                if (callback != null) {
+                    callback.eachAgree(permissionItem, true);
+                }
             } else {
                 permissionList.add(permissionItem);
             }
         }
         if (permissionList.size() <= 0) {
-            callback.granted();
+            if (callback != null) {
+                callback.agree();
+            }
         } else {
             String[] permissionOther = new String[permissionList.size()];
             permissionList.toArray(permissionOther);
