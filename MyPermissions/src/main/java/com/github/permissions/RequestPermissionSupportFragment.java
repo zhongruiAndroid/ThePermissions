@@ -1,14 +1,14 @@
 package com.github.permissions;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
@@ -20,7 +20,7 @@ import java.util.Random;
  * @createBy Administrator
  * @time 2018-12-17 13:45
  */
-public class RequestPermissionFragment extends Fragment implements PermissionRequest {
+public class RequestPermissionSupportFragment extends Fragment implements PermissionRequest {
 
     private SparseArray<PermissionCallback> callbackSparseArray = new SparseArray<>();
 
@@ -30,8 +30,8 @@ public class RequestPermissionFragment extends Fragment implements PermissionReq
         setRetainInstance(true);
     }
 
-    public static RequestPermissionFragment newInstance() {
-        RequestPermissionFragment fragment = new RequestPermissionFragment();
+    public static RequestPermissionSupportFragment newInstance() {
+        RequestPermissionSupportFragment fragment = new RequestPermissionSupportFragment();
         return fragment;
     }
 
@@ -54,11 +54,11 @@ public class RequestPermissionFragment extends Fragment implements PermissionReq
         if (permissionCallback != null) {
             boolean allGranted = true;
             String firstDenied = null;
-            String permission = "";
+            String permission="";
             for (int i = 0; i < grantResults.length; i++) {
                 if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                    permission = permissions[i];
-                    permissionCallback.eachAgree(permission, false);
+                    permission=permissions[i];
+                    permissionCallback.eachAgree(permission,false);
                 } else if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
                     permissionCallback.eachDenied(permissions[i]);
                     allGranted = false;
@@ -105,7 +105,7 @@ public class RequestPermissionFragment extends Fragment implements PermissionReq
         if (permission == null || permission.length == 0 ) {
             return;
         }
-        Activity activity = getActivity();
+        FragmentActivity activity = getActivity();
 
         List<String> permissionList = new ArrayList<>();
 
@@ -131,9 +131,7 @@ public class RequestPermissionFragment extends Fragment implements PermissionReq
             permissionList.toArray(permissionOther);
 
             int requestCode = setCallbackForCode(callback);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(permissionOther, requestCode);
-            }
+            requestPermissions(permissionOther, requestCode);
         }
 
 
