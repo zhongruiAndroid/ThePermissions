@@ -63,6 +63,6 @@ public class BackgroundLocationPermissionTask extends BaseTask {
                 return -1;
             }
         }
-        return 1;
+        return MyPermission.hasPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) || MyPermission.hasPermission(context, "android.permission.ACCESS_COARSE_LOCATION")? 1 : -1;
     }
 }

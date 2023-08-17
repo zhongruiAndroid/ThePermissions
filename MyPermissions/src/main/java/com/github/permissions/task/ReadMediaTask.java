@@ -63,6 +63,22 @@ public class ReadMediaTask extends BaseTask {
             }
         } else {
             list.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            if(ActivityCompat.checkSelfPermission(fragmentInter.getActivity(), READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ){
+                if (has) {
+                    agreePermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+                }
+                if (has1) {
+                    agreePermissions.add(READ_MEDIA_AUDIO);
+                }
+                if (has2) {
+                    agreePermissions.add(READ_MEDIA_IMAGES);
+                }
+                if (has3) {
+                    agreePermissions.add(READ_MEDIA_VIDEO);
+                }
+                finish(originRequestPermissions, agreePermissions, deniedPermissions);
+                return;
+            }
         }
         fragmentInter.getRequestHelper().requestSimple(fragmentInter, list, new PermissionCallback() {
             @Override
@@ -84,30 +100,45 @@ public class ReadMediaTask extends BaseTask {
 
             @Override
             public void denied(List<String> agreeList, List<String> deniedList) {
-                if (has) {
-                    deniedPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-                }
-                if (has1) {
-                    if (agreeList.contains(READ_MEDIA_AUDIO)) {
-                        agreePermissions.add(READ_MEDIA_AUDIO);
+                if (Build.VERSION.SDK_INT >= 33) {
+                    if (has) {
+                        deniedPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
                     }
-                    if (deniedList.contains(READ_MEDIA_AUDIO)) {
+                    if (has1) {
+                        if (agreeList.contains(READ_MEDIA_AUDIO)) {
+                            agreePermissions.add(READ_MEDIA_AUDIO);
+                        }
+                        if (deniedList.contains(READ_MEDIA_AUDIO)) {
+                            deniedPermissions.add(READ_MEDIA_AUDIO);
+                        }
+                    }
+                    if (has2) {
+                        if (agreeList.contains(READ_MEDIA_IMAGES)) {
+                            agreePermissions.add(READ_MEDIA_IMAGES);
+                        }
+                        if (deniedList.contains(READ_MEDIA_IMAGES)) {
+                            deniedPermissions.add(READ_MEDIA_IMAGES);
+                        }
+                    }
+                    if (has3) {
+                        if (agreeList.contains(READ_MEDIA_VIDEO)) {
+                            agreePermissions.add(READ_MEDIA_VIDEO);
+                        }
+                        if (deniedList.contains(READ_MEDIA_VIDEO)) {
+                            deniedPermissions.add(READ_MEDIA_VIDEO);
+                        }
+                    }
+                }else{
+                    if (has) {
+                        deniedPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+                    }
+                    if (has1) {
                         deniedPermissions.add(READ_MEDIA_AUDIO);
                     }
-                }
-                if (has2) {
-                    if (agreeList.contains(READ_MEDIA_IMAGES)) {
-                        agreePermissions.add(READ_MEDIA_IMAGES);
-                    }
-                    if (deniedList.contains(READ_MEDIA_IMAGES)) {
+                    if (has2) {
                         deniedPermissions.add(READ_MEDIA_IMAGES);
                     }
-                }
-                if (has3) {
-                    if (agreeList.contains(READ_MEDIA_VIDEO)) {
-                        agreePermissions.add(READ_MEDIA_VIDEO);
-                    }
-                    if (deniedList.contains(READ_MEDIA_VIDEO)) {
+                    if (has3) {
                         deniedPermissions.add(READ_MEDIA_VIDEO);
                     }
                 }

@@ -58,6 +58,6 @@ public class BodySensorsBackgroundTask extends BaseTask {
                 return -1;
             }
         }
-        return 1;
+        return MyPermission.hasPermission(context, Manifest.permission.BODY_SENSORS)? 1 : -1;
     }
 }

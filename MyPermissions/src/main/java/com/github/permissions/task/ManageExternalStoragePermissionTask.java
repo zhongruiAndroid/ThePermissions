@@ -1,8 +1,10 @@
 package com.github.permissions.task;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -17,7 +19,7 @@ import com.github.permissions.MyPermission;
 import com.github.permissions.PermissionCallback;
 
 import androidx.annotation.NonNull;
-
+import androidx.core.app.ActivityCompat;
 
 
 import java.util.List;
@@ -31,15 +33,31 @@ public class ManageExternalStoragePermissionTask extends BaseTask {
 
 
     @Override
-    public void request(final List<String> originRequestPermissions,final  List<String> agreePermissions,final  List<String> deniedPermissions) {
+    public void request(final List<String> originRequestPermissions, final List<String> agreePermissions, final List<String> deniedPermissions) {
         boolean has = originRequestPermissions.contains(MANAGE_EXTERNAL_STORAGE);
         if (!has) {
             finish(originRequestPermissions, agreePermissions, deniedPermissions);
             return;
         }
-        if (Build.VERSION.SDK_INT < 30 || hasPermission(fragmentInter.getActivity(), MANAGE_EXTERNAL_STORAGE) == 1) {
-            agreePermissions.add(MANAGE_EXTERNAL_STORAGE);
-            finish(originRequestPermissions, agreePermissions, deniedPermissions);
+        if (Build.VERSION.SDK_INT < 30) {
+            if (hasPermission(fragmentInter.getActivity(), MANAGE_EXTERNAL_STORAGE) == 1) {
+                agreePermissions.add(MANAGE_EXTERNAL_STORAGE);
+                finish(originRequestPermissions, agreePermissions, deniedPermissions);
+            } else {
+                fragmentInter.getRequestHelper().requestSimple(fragmentInter, Manifest.permission.WRITE_EXTERNAL_STORAGE, new PermissionCallback() {
+                    @Override
+                    public void agreeAll(List<String> agreeList) {
+                        agreePermissions.add(MANAGE_EXTERNAL_STORAGE);
+                        finish(originRequestPermissions, agreePermissions, deniedPermissions);
+                    }
+
+                    @Override
+                    public void denied(List<String> agreeList, List<String> deniedList) {
+                        deniedPermissions.add(MANAGE_EXTERNAL_STORAGE);
+                        finish(originRequestPermissions, agreePermissions, deniedPermissions);
+                    }
+                });
+            }
             return;
         }
         Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
@@ -69,6 +87,6 @@ public class ManageExternalStoragePermissionTask extends BaseTask {
         if (sdkInt >= 30) {
             return Environment.isExternalStorageManager() ? 1 : -1;
         }
-        return 1;
+        return ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ? 1 : -1;
     }
 }
