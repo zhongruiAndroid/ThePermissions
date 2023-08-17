@@ -7,20 +7,84 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/btGet"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Activity请求权限"
-        android:layout_marginTop="100dp"
-        android:textAllCaps="false"
-        android:gravity="center"
-        android:layout_gravity="center"
-        />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-    <fragment
-        android:id="@+id/fragment"
-        class="com.test.permissions.BlankFragment"
+        <Button
+            android:id="@+id/btSetting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="去设置页面"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btSetting1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="去通知设置页面"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btSystemSetting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="去系统设置页面"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btWindowAlertSetting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="去悬浮窗设置页面"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/btSetting2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="去安装App设置页面"
+            android:textAllCaps="false" />
+
+
+        <Button
+            android:id="@+id/btRequestAll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="请求所有权限"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvList"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 </LinearLayout>

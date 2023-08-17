@@ -1,16 +1,13 @@
 package com.github.permissions;
 
+import java.util.List;
+
 /**
  * @createBy Administrator
  * @time 2018-12-17 10:41
  */
 public abstract class PermissionCallback {
-    public abstract void agree();
-    public abstract void denied(String firstDenied);
-    public void eachAgree(String permission,boolean preIsAgree){
+    public abstract void agreeAll(List<String> agreeList);
 
-    };
-    public void eachDenied(String permission){
-
-    };
+    public abstract void denied(List<String> agreeList, List<String> deniedList);
 }
