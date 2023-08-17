@@ -51,26 +51,25 @@ public class NotificationPermissionTask extends BaseTask {
             //这种方案适用于 API21——25，即 5.0——7.1 之间的版本可以使用
             intent.putExtra("app_package", activity.getPackageName());
             intent.putExtra("app_uid", activity.getApplicationInfo().uid);
-        } catch (Exception e) {
-            e.printStackTrace();
-            intent = new Intent();
-            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
-            intent.setData(uri);
-        }
-
-        ActTools.get(fragmentInter.getActivity()).startForResult(intent, new ResultCallback() {
-            @Override
-            public void onActivityResult(int resultCode, Intent data) {
-                if(MyPermission.hasPermission(fragmentInter.getActivity(),POST_NOTIFICATIONS)){
-                    agreePermissions.add(POST_NOTIFICATIONS);
-                    finish(originRequestPermissions, agreePermissions, deniedPermissions);
-                }else{
-                    deniedPermissions.add(POST_NOTIFICATIONS);
+            ActTools.get(fragmentInter.getActivity()).startForResult(intent, new ResultCallback() {
+                @Override
+                public void onActivityResult(int resultCode, Intent data) {
+                    if(MyPermission.hasPermission(fragmentInter.getActivity(),POST_NOTIFICATIONS)){
+                        if(!agreePermissions.contains(POST_NOTIFICATIONS)){
+                            agreePermissions.add(POST_NOTIFICATIONS);
+                        }
+                    }else{
+                        if(!deniedPermissions.contains(POST_NOTIFICATIONS)){
+                            deniedPermissions.add(POST_NOTIFICATIONS);
+                        }
+                    }
                     finish(originRequestPermissions, agreePermissions, deniedPermissions);
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
     }
 
     public static int hasPermission(Context context, @NonNull String permission) {
