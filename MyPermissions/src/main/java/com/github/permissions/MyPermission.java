@@ -11,6 +11,7 @@ import android.os.Build;
 import android.provider.Settings;
 
 import com.github.permissions.task.BackgroundLocationPermissionTask;
+import com.github.permissions.task.BluetoothPermissionTask;
 import com.github.permissions.task.BodySensorsBackgroundTask;
 import com.github.permissions.task.ManageExternalStoragePermissionTask;
 import com.github.permissions.task.NotificationPermissionTask;
@@ -95,7 +96,6 @@ public class MyPermission {
         }
 
     }
-
 
     /**
      * 跳转到系统设置页面
@@ -207,6 +207,9 @@ public class MyPermission {
         if (result == 0) {
             result = WifiPermissionTask.hasPermission(context, permission);
         }
+        if (result == 0) {
+            result = BluetoothPermissionTask.hasPermission(context, permission);
+        }
 
         if (result != 0) {
             return result == 1;
@@ -314,6 +317,27 @@ public class MyPermission {
             } else {
                 activity.startActivityForResult(intent, requestCode);
             }
+        }
+    }
+
+
+    public static void toManageExternalStorageSetting(Activity activity) {
+        toManageExternalStorageSetting(activity, -1);
+    }
+
+    public static void toManageExternalStorageSetting(Activity activity, int requestCode) {
+        if (Build.VERSION.SDK_INT < 30 || activity == null) {
+            return;
+        }
+        Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+        intent.setData(Uri.parse("package:" + activity.getPackageName()));
+        if (intent.resolveActivity(activity.getPackageManager()) == null) {
+            intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+        }
+        if (requestCode == -1) {
+            activity.startActivity(intent);
+        } else {
+            activity.startActivityForResult(intent, requestCode);
         }
     }
 

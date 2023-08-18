@@ -15,12 +15,6 @@ import java.util.List;
 public class RequestPermissionFragment extends Fragment implements PermissionRequest, FragmentInter {
     private RequestHelper requestHelper = new RequestHelper();
 
-    private RequestHelper getHelper() {
-        if (requestHelper == null) {
-            requestHelper = new RequestHelper();
-        }
-        return requestHelper;
-    }
 
     public static RequestPermissionFragment newInstance() {
         RequestPermissionFragment fragment = new RequestPermissionFragment();
@@ -37,7 +31,7 @@ public class RequestPermissionFragment extends Fragment implements PermissionReq
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        getHelper().onRequestPermissionsResult(requestCode, permissions, grantResults);
+        getRequestHelper().onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
 
@@ -52,7 +46,7 @@ public class RequestPermissionFragment extends Fragment implements PermissionReq
         if (permission == null || permission.length == 0) {
             return;
         }
-        getHelper().request(this, permission, callback);
+        getRequestHelper().request(this, permission, callback);
     }
 
     @Override
@@ -60,7 +54,7 @@ public class RequestPermissionFragment extends Fragment implements PermissionReq
         if (permission == null || permission.size() == 0) {
             return;
         }
-        getHelper().request(this, permission, callback);
+        getRequestHelper().request(this, permission, callback);
     }
 
     public void requestAll(PermissionCallback callback) {
@@ -69,13 +63,22 @@ public class RequestPermissionFragment extends Fragment implements PermissionReq
     }
 
     @Override
+    public PermissionRequest beforeRequest(OnBeforeRequestListener listener) {
+        getRequestHelper().setOnBeforeRequestListener(listener);
+        return this;
+    }
+
+    @Override
     public RequestHelper getRequestHelper() {
-        return getHelper();
+        if (requestHelper == null) {
+            requestHelper = new RequestHelper();
+        }
+        return requestHelper;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getHelper().onDestroy();
+        getRequestHelper().onDestroy();
     }
 }

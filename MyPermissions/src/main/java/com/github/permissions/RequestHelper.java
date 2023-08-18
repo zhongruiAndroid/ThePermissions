@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.github.permissions.task.BackgroundLocationPermissionTask;
+import com.github.permissions.task.BluetoothPermissionTask;
 import com.github.permissions.task.BodySensorsBackgroundTask;
 import com.github.permissions.task.ManageExternalStoragePermissionTask;
 import com.github.permissions.task.NormalPermissionTask;
@@ -31,6 +32,11 @@ public class RequestHelper implements Serializable {
     /*已经同意不需要请求的权限*/
     private SparseArray<List<String>> noNeedRequestPermissions = new SparseArray<>();
     private Random random = new Random();
+    private OnBeforeRequestListener onBeforeRequestListener;
+
+    public void setOnBeforeRequestListener(OnBeforeRequestListener onBeforeRequestListener) {
+        this.onBeforeRequestListener = onBeforeRequestListener;
+    }
 
     public int setCallbackForCode(PermissionCallback callback) {
         if (callbackSparseArray == null) {
@@ -56,6 +62,7 @@ public class RequestHelper implements Serializable {
         if (noNeedRequestPermissions != null) {
             noNeedRequestPermissions.clear();
         }
+        onBeforeRequestListener=null;
     }
 
     public void request(FragmentInter fragment, String permission, PermissionCallback callback) {
@@ -78,22 +85,20 @@ public class RequestHelper implements Serializable {
         request(fragment, Arrays.asList(permission), callback);
     }
 
-    public void request(FragmentInter fragment, List<String> permission, PermissionCallback permissionCallback) {
+    public void request(FragmentInter fragment,final List<String> permission, PermissionCallback permissionCallback) {
         if (permission == null || permission.size() == 0) {
             if (permissionCallback != null) {
                 permissionCallback.agreeAll(new ArrayList<String>());
             }
             return;
         }
-        RequestLink link = new RequestLink();
+        final RequestLink link = new RequestLink();
         /*常规权限请求*/
         link.addNext(new NormalPermissionTask(fragment, permissionCallback));
         /*后台位置权限*/
         link.addNext(new BackgroundLocationPermissionTask(fragment, permissionCallback));
         /*后台传感器权限*/
         link.addNext(new BodySensorsBackgroundTask(fragment, permissionCallback));
-        /*所有文件权限*/
-        link.addNext(new ManageExternalStoragePermissionTask(fragment, permissionCallback));
         /*通知权限*/
         link.addNext(new NotificationPermissionTask(fragment, permissionCallback));
         /*安装权限*/
@@ -106,8 +111,44 @@ public class RequestHelper implements Serializable {
         link.addNext(new ReadMediaTask(fragment, permissionCallback));
         /*android13wifi权限*/
         link.addNext(new WifiPermissionTask(fragment, permissionCallback));
+        /*所有文件权限,先处理ReadMediaTask再处理ManageExternalStoragePermissionTask*/
+        link.addNext(new ManageExternalStoragePermissionTask(fragment, permissionCallback));
+        /*android11蓝牙权限*/
+        link.addNext(new BluetoothPermissionTask(fragment, permissionCallback));
 
-        link.request(new ArrayList<>(permission), new ArrayList<String>(), new ArrayList<String>());
+
+
+
+        if(onBeforeRequestListener!=null){
+            final List<String>deniedPermissions=new ArrayList<>();
+            for (String item:permission){
+                if(!MyPermission.hasPermission(fragment.getActivity(),item)){
+                    deniedPermissions.add(item);
+                }
+            }
+            if(deniedPermissions.isEmpty()){
+                link.request(new ArrayList<>(permission), new ArrayList<String>(), new ArrayList<String>());
+                return;
+            }
+            onBeforeRequestListener.handle(deniedPermissions, new OnBeforeRequestListener.Listener() {
+                @Override
+                public void onResult(List<String> agreeRequestList) {
+                    if(agreeRequestList==null||agreeRequestList.size()==0){
+                        /*如果被拒绝的权限用户不同意请求获取*/
+                        permission.removeAll(deniedPermissions);
+                        link.request(new ArrayList<>(permission), new ArrayList<String>(), new ArrayList<String>(deniedPermissions));
+                        return;
+                    }
+                    deniedPermissions.removeAll(agreeRequestList);
+                    permission.removeAll(deniedPermissions);
+                    link.request(new ArrayList<>(permission), new ArrayList<String>(), new ArrayList<String>(deniedPermissions));
+                }
+            });
+        }else{
+            link.request(new ArrayList<>(permission), new ArrayList<String>(), new ArrayList<String>());
+        }
+
+
     }
 
     public void requestSimple(FragmentInter fragment, String permission, PermissionCallback callback) {

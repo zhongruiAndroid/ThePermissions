@@ -16,8 +16,10 @@ import android.util.Pair;
 import android.view.View;
 
 import com.github.permissions.MyPermission;
+import com.github.permissions.OnBeforeRequestListener;
 import com.github.permissions.PermissionCallback;
 import com.github.permissions.task.BodySensorsBackgroundTask;
+import com.github.permissions.task.NormalPermissionTask;
 import com.github.permissions.task.NotificationPermissionTask;
 import com.github.permissions.task.ReadMediaTask;
 import com.github.permissions.task.WifiPermissionTask;
@@ -31,17 +33,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.i("=====","==SDK_INT==="+ Build.VERSION.SDK_INT);
+        MyPermission.get(this).beforeRequest(new OnBeforeRequestListener() {
+            @Override
+            public void handle(List<String> deniedPermission, Listener listener) {
+                listener.onResult(deniedPermission);
+            }
+        }).request("", new PermissionCallback() {
+            @Override
+            public void agreeAll(List<String> agreeList) {
+
+            }
+
+            @Override
+            public void denied(List<String> agreeList, List<String> deniedList) {
+
+            }
+        });
+
+        Log.i("=====", "==SDK_INT===" + Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Log.i("=====","==minSdkVersion==="+ getApplicationInfo().minSdkVersion);
+            Log.i("=====", "==minSdkVersion===" + getApplicationInfo().minSdkVersion);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            Log.i("=====","==compileSdkVersionCodename==="+ getApplicationInfo().compileSdkVersionCodename);
+            Log.i("=====", "==compileSdkVersionCodename===" + getApplicationInfo().compileSdkVersionCodename);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            Log.i("=====","==compileSdkVersion==="+ getApplicationInfo().compileSdkVersion);
+            Log.i("=====", "==compileSdkVersion===" + getApplicationInfo().compileSdkVersion);
         }
-        Log.i("=====","==targetSdkVersion==="+ getApplicationInfo().targetSdkVersion);
+        Log.i("=====", "==targetSdkVersion===" + getApplicationInfo().targetSdkVersion);
         Activity activity = this;
         findViewById(R.id.btSetting).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,6 +116,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+            }
+        });
+        findViewById(R.id.btManageExternalStorageSetting).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyPermission.toManageExternalStorageSetting(activity);
             }
         });
 
@@ -250,6 +275,12 @@ public class MainActivity extends AppCompatActivity {
         item.addPermission(new PermissionItem.Item(Manifest.permission.BLUETOOTH_ADVERTISE, false));
         list.add(item);
 
+
+        item = new PermissionItem();
+        item.addPermission(new PermissionItem.Item(Manifest.permission.BLUETOOTH_CONNECT, false));
+        item.addPermission(new PermissionItem.Item(Manifest.permission.BLUETOOTH_ADVERTISE, false));
+        item.addPermission(new PermissionItem.Item(Manifest.permission.BLUETOOTH_SCAN, false));
+        list.add(item);
 
         item = new PermissionItem();
         item.addPermission(new PermissionItem.Item(Manifest.permission.BLUETOOTH_CONNECT, false));

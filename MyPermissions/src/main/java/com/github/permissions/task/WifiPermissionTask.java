@@ -13,8 +13,6 @@ import com.github.permissions.PermissionCallback;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
-
-import com.github.acttool.ResultCallback;
 import java.util.List;
 
 public class WifiPermissionTask extends BaseTask {
@@ -36,7 +34,7 @@ public class WifiPermissionTask extends BaseTask {
             finish(originRequestPermissions, agreePermissions, deniedPermissions);
             return;
         }
-        int sdkInt = Build.VERSION.SDK_INT;
+        final int sdkInt = Build.VERSION.SDK_INT;
         String permission;
         if (sdkInt >= 33) {
             permission = NEARBY_WIFI_DEVICES;
@@ -48,6 +46,13 @@ public class WifiPermissionTask extends BaseTask {
                 @Override
                 public void agreeAll(List<String> agreeList) {
                     agreePermissions.add(NEARBY_WIFI_DEVICES);
+                    if (sdkInt < 33) {
+                        boolean remove = deniedPermissions.remove(Manifest.permission.ACCESS_FINE_LOCATION);
+                        if(remove){
+                            /*如果之前存在拒绝的情况*/
+                            agreePermissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+                        }
+                    }
                     finish(originRequestPermissions, agreePermissions, deniedPermissions);
                 }
 

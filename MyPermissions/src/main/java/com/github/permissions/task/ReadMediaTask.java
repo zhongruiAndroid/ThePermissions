@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Environment;
 import android.text.TextUtils;
 
 import com.github.permissions.BaseTask;
@@ -12,8 +13,6 @@ import com.github.permissions.PermissionCallback;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-
-import com.github.acttool.ResultCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +28,11 @@ public class ReadMediaTask extends BaseTask {
     }
 
     @Override
-    public void request(final List<String> originRequestPermissions,final  List<String> agreePermissions, final List<String> deniedPermissions) {
-       final boolean has = originRequestPermissions.contains(READ_EXTERNAL_STORAGE);
-       final boolean has1 = originRequestPermissions.contains(ReadMediaTask.READ_MEDIA_AUDIO);
-       final boolean has2 = originRequestPermissions.contains(ReadMediaTask.READ_MEDIA_IMAGES);
-       final boolean has3 = originRequestPermissions.contains(ReadMediaTask.READ_MEDIA_VIDEO);
+    public void request(final List<String> originRequestPermissions, final List<String> agreePermissions, final List<String> deniedPermissions) {
+        final boolean has = originRequestPermissions.contains(READ_EXTERNAL_STORAGE);
+        final boolean has1 = originRequestPermissions.contains(ReadMediaTask.READ_MEDIA_AUDIO);
+        final boolean has2 = originRequestPermissions.contains(ReadMediaTask.READ_MEDIA_IMAGES);
+        final boolean has3 = originRequestPermissions.contains(ReadMediaTask.READ_MEDIA_VIDEO);
 
         if (!(has || has1 || has2 || has3)) {
             finish(originRequestPermissions, agreePermissions, deniedPermissions);
@@ -63,7 +62,7 @@ public class ReadMediaTask extends BaseTask {
             }
         } else {
             list.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-            if(ActivityCompat.checkSelfPermission(fragmentInter.getActivity(), READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ){
+            if (ActivityCompat.checkSelfPermission(fragmentInter.getActivity(), READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 if (has) {
                     agreePermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
                 }
@@ -128,7 +127,7 @@ public class ReadMediaTask extends BaseTask {
                             deniedPermissions.add(READ_MEDIA_VIDEO);
                         }
                     }
-                }else{
+                } else {
                     if (has) {
                         deniedPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
                     }
@@ -157,6 +156,11 @@ public class ReadMediaTask extends BaseTask {
             return 0;
         }
         int sdkInt = Build.VERSION.SDK_INT;
+        if (sdkInt >= 30) {
+            if (Environment.isExternalStorageManager()) {
+                return 1;
+            }
+        }
         if (sdkInt >= 33) {
             if (TextUtils.equals(permission, READ_MEDIA_AUDIO) || TextUtils.equals(permission, READ_MEDIA_IMAGES) || TextUtils.equals(permission, READ_MEDIA_VIDEO)) {
                 return ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED ? 1 : -1;

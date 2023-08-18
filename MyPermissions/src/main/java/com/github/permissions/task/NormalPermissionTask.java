@@ -2,7 +2,6 @@ package com.github.permissions.task;
 
 import android.Manifest;
 
-
 import com.github.permissions.BaseTask;
 import com.github.permissions.FragmentInter;
 import com.github.permissions.PermissionCallback;
@@ -33,8 +32,13 @@ public class NormalPermissionTask extends BaseTask {
         list.remove(ReadMediaTask.READ_MEDIA_IMAGES);
         list.remove(ReadMediaTask.READ_MEDIA_VIDEO);
 
+        /*适配android11,wifi权限*/
         list.remove(WifiPermissionTask.NEARBY_WIFI_DEVICES);
 
+        /*适配android11,蓝牙权限*/
+        list.remove(BluetoothPermissionTask.BLUETOOTH_ADVERTISE);
+        list.remove(BluetoothPermissionTask.BLUETOOTH_CONNECT);
+        list.remove(BluetoothPermissionTask.BLUETOOTH_SCAN);
 
         String[] objects = list.toArray(new String[0]);
 
